@@ -16,7 +16,6 @@
         input, select, button, textarea { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; font-size: 0.95rem; box-sizing: border-box; }
         #giaViet { color: #d63031; border: 1px dashed #d63031; background: #fff5f5; font-weight: bold; }
         
-        /* FIX CSS MỤC LỚN & TRẺ */
         .radio-group { display: flex; gap: 10px; justify-content: space-between; padding: 5px 0; }
         .radio-group label { border-left: none; text-transform: none; font-size: 0.9rem; margin: 0; display: flex; align-items: center; gap: 8px; flex: 1; padding: 0; }
         .radio-group input[type="radio"] { width: 20px; height: 20px; margin: 0; flex-shrink: 0; accent-color: var(--primary); }
@@ -25,6 +24,9 @@
         .header-with-btn { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
         .btn-copy { background: var(--primary); color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 0.75rem; width: auto; cursor: pointer;}
         .btn-clear { background: #d63031; }
+        .btn-paste { background: var(--success); margin-right: 5px; } /* Thêm style nút dán */
+        .btn-group { display: flex; } /* Nhóm nút */
+
         .action-buttons { display: flex; gap: 10px; margin-top: 5px; grid-column: 1 / -1; }
         #downloadBtn { background: #636e72; flex: 1; color: white; border: none; font-weight: bold;}
         #shareBtn { background: var(--success); flex: 1.5; color: white; border: none; font-weight: bold;}
@@ -89,7 +91,10 @@
             <div class="full-width">
                 <div class="header-with-btn">
                     <label>2. Mã ghi đè</label>
-                    <button class="btn-copy btn-clear" id="clearOverrideBtn" type="button">XÓA</button>
+                    <div class="btn-group">
+                        <button class="btn-copy btn-paste" id="pasteOverrideBtn" type="button">DÁN</button>
+                        <button class="btn-copy btn-clear" id="clearOverrideBtn" type="button">XÓA</button>
+                    </div>
                 </div>
                 <textarea id="overrideName" rows="2" placeholder="Ví dụ: 27-31—29D"></textarea>
             </div>
@@ -207,6 +212,17 @@
         $('overrideName').value = "";
         $('overrideName').dispatchEvent(new Event('input', { bubbles: true }));
         $('overrideName').focus();
+    };
+
+    // LOGIC DÁN VĂN BẢN MỚI
+    $('pasteOverrideBtn').onclick = async () => {
+        try {
+            const text = await navigator.clipboard.readText();
+            $('overrideName').value = text;
+            $('overrideName').dispatchEvent(new Event('input', { bubbles: true }));
+        } catch (err) {
+            alert("Không thể dán. Vui lòng cho phép quyền truy cập clipboard.");
+        }
     };
 
     $('downloadBtn').onclick = async () => {
